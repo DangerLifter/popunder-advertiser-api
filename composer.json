@@ -1,0 +1,29 @@
+{
+    "name": "dmitryp/popunder-advertiser-api",
+    "description": "Library for popunder.net advertiser api",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Dmitry Pismennyy",
+            "email": "dmitry.p@rebelinternet.eu"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "guzzlehttp/guzzle": "^6.3@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "PopUnderAdvertiser\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PopUnderAdvertiser\\": "src/",
+            "PopUnderAdvertiser\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.4@dev"
+    }
+}
