@@ -1,5 +1,5 @@
 {
-    "name": "dmitryp/popunder-advertiser-api",
+    "name": "dangerlifter/popunder-advertiser-api",
     "description": "Library for popunder.net advertiser api",
     "type": "library",
     "authors": [
@@ -21,6 +21,7 @@
         "psr-4": {
             "PopUnderAdvertiser\\": "src/",
             "PopUnderAdvertiser\\Tests\\": "tests/"
+
         }
     },
     "require-dev": {
