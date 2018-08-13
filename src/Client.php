@@ -183,7 +183,6 @@ class Client
 		if ($data) $url .= '?'.http_build_query($data);
 
 		try {
-			var_dump($url);
 			return $this->parseResponse($this->_httpClient->get($url), $ignoreErrorCheck);
 		} catch (GuzzleException $e) {
 			throw new Exception('Failed request to service', 0, $e);
