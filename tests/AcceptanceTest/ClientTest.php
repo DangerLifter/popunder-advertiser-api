@@ -43,7 +43,7 @@ class ClientTest extends TestCase
 		);
 	}
 
-	public function testAddCampaign_WrongArguments_Failed(): void
+	public function testAddCampaign_WrongArguments_Exception(): void
 	{
 		$request = new CampaignData();
 		$this->expectException(Exception::class);
@@ -51,29 +51,19 @@ class ClientTest extends TestCase
 		$this->_client->addCampaign($request);
 	}
 
+	public function testGetCampaignInfo_WrongId_Exception(): void
+	{
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('Invalid campaign id');
+		$this->_client->getTotalCampaignInfo('12111');
+	}
+
 	public function testSimpleAddAndRemoveCampaign_ValidArguments_Success(): void
 	{
 		$campaignIds = $this->_client->getCampaignList();
 		$this->assertInternalType('array', $campaignIds);
 
-		$locationId = $this->_client->getLocations()->getByName('Russia')['id'];
-		$topicId = $this->_client->getTopics()->getByName(EntityList::NAME_ALL_TOPICS)['id'];
-		$langId = $this->_client->getLanguages()->getByName(EntityList::NAME_ALL_LANGUAGES)['id'];
-		$browserId = $this->_client->getBrowsers()->getByName('Desktop')['id'];
-
-		$request =
-			(new CampaignData())
-				->setName('Test company')
-				->setUrl('http://example.com')
-				->setMinBid('1.2')
-				->setMaxBid('2.5')
-				->addLocation($locationId)
-				->addTopic($topicId)
-				->addLanguage($langId)
-				->addBrowser($browserId)
-				->adultNotAllowed()
-		;
-
+		$request = $this->createCampaignData();
 		$campaignId = $this->_client->addCampaign($request);
 		$this->assertGreaterThan(0, $campaignId);
 
@@ -94,6 +84,18 @@ class ClientTest extends TestCase
 		$this->assertEquals($campaignIds, $this->_client->getCampaignList());
 	}
 
+
+	public function testGetCampaignInfo_DeletedCampaign_Success(): void
+	{
+		$request = $this->createCampaignData();
+		$campaignId = $this->_client->addCampaign($request);
+
+		$this->_client->removeCampaign($campaignId);
+
+		$info = $this->_client->getTotalCampaignInfo($campaignId);
+		$this->assertEquals(1, $info['deleted']);
+	}
+
 	private function assertCampaign(int $campaignId, CampaignData $expected)
 	{
 		$this->assertNotFalse(
@@ -112,5 +114,41 @@ class ClientTest extends TestCase
 			$expected->getMaxBid(),
 			$this->_client->getCampaignInfo($campaignId, Client::CAMPAIGN_INFO_MAXBID)
 		);
+		$this->assertEquals(
+			[
+				'name' => $expected->getName(),
+				'minsum' => $expected->getMinBid(),
+				'maxsum' => $expected->getMaxBid(),
+				'active' => 1,
+				'deleted' => 0,
+				'url' => $expected->getUrl(),
+				'verified' => 0,
+				'comments' => ''
+			],
+			$this->_client->getTotalCampaignInfo($campaignId)
+		);
+	}
+
+	private function createCampaignData(): CampaignData
+	{
+		$locationId = $this->_client->getLocations()->getByName('Russia')['id'];
+		$topicId = $this->_client->getTopics()->getByName(EntityList::NAME_ALL_TOPICS)['id'];
+		$langId = $this->_client->getLanguages()->getByName(EntityList::NAME_ALL_LANGUAGES)['id'];
+		$browserId = $this->_client->getBrowsers()->getByName('Desktop')['id'];
+
+		return
+			(new CampaignData())
+				->setName('Test company')
+				->setUrl('http://example.com')
+				->setMinBid('1.2')
+				->setMaxBid('2.5')
+				->setLimitDayCnt(1000)
+				->setLimitAllCnt(1000)
+				->addLocation($locationId)
+				->addTopic($topicId)
+				->addLanguage($langId)
+				->addBrowser($browserId)
+				->adultNotAllowed()
+		;
 	}
 }

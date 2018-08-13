@@ -16,7 +16,6 @@ class Client
 	public const CAMPAIGN_INFO_ACTIVE 	= 'active';
 	public const CAMPAIGN_INFO_DELETED 	= 'deleted';
 	public const CAMPAIGN_INFO_URL 		= 'url';
-	public const CAMPAIGN_INFO_TOTAL 	= 'total';
 
 	private $_userId;
 	private $_key;
@@ -96,6 +95,18 @@ class Client
 		return $response['ids'];
 	}
 
+	public function getTotalCampaignInfo(int $campaignId): array
+	{
+		$response = $this->request(
+			'campaign/get', ['campaign_id' => $campaignId, 'field' => 'total']
+		);
+		$result = $response['value'];
+		if (isset($response['comments'])) {
+			$result['comments'] = $response['comments'];
+		}
+		return $result;
+	}
+
 	public function getCampaignInfo(int $campaignId, string $field): string
 	{
 		$response = $this->request(
@@ -172,6 +183,7 @@ class Client
 		if ($data) $url .= '?'.http_build_query($data);
 
 		try {
+			var_dump($url);
 			return $this->parseResponse($this->_httpClient->get($url), $ignoreErrorCheck);
 		} catch (GuzzleException $e) {
 			throw new Exception('Failed request to service', 0, $e);
