@@ -66,13 +66,13 @@ class CampaignData
 		return $this;
 	}
 
-	public function setMinBid(float $minBid): self
+	public function setMinBid(float $minBid = null): self
 	{
 		$this->_minBid = $minBid;
 		return $this;
 	}
 
-	public function setMaxBid(float $maxBid): self
+	public function setMaxBid(float $maxBid = null): self
 	{
 		$this->_maxBid = $maxBid;
 		return $this;
@@ -84,31 +84,31 @@ class CampaignData
 		return $this;
 	}
 
-	public function setLimitAllCnt(int $limitAllCnt): self
+	public function setLimitAllCnt(int $limitAllCnt = null): self
 	{
 		$this->_limitAllCnt = $limitAllCnt;
 		return $this;
 	}
 
-	public function setLimitDayCnt(int $limitDayCnt): self
+	public function setLimitDayCnt(int $limitDayCnt = null): self
 	{
 		$this->_limitDayCnt = $limitDayCnt;
 		return $this;
 	}
 
-	public function setLimitHourCnt(int $limitHourCnt): self
+	public function setLimitHourCnt(int $limitHourCnt = null): self
 	{
 		$this->_limitHourCnt = $limitHourCnt;
 		return $this;
 	}
 
-	public function setLimitDayMoney(float $limitDayMoney): self
+	public function setLimitDayMoney(float $limitDayMoney = null): self
 	{
 		$this->_limitDayMoney = $limitDayMoney;
 		return $this;
 	}
 
-	public function setLimitAllMoney(float $limitAllMoney): self
+	public function setLimitAllMoney(float $limitAllMoney = null): self
 	{
 		$this->_limitAllMoney = $limitAllMoney;
 		return $this;
@@ -286,7 +286,7 @@ class CampaignData
 	{
 		$fieldName = '_'.$name;
 		if (null !== $this->$fieldName) {
-			$data['fields'][$queryFieldName ?? $name] = $this->$fieldName;
+			$data['fields'][\strtolower($queryFieldName ?? $name)] = $this->$fieldName;
 		}
 		return $this;
 	}
