@@ -30,6 +30,38 @@ class ClientTest extends TestCase
 		$this->assertInternalType('array', $this->_client->getCampaignList());
 	}
 
+	public function testGetLanguageByName(): void
+	{
+		$this->assertEquals(
+			['id' => 2, 'name' => 'en'],
+			$this->_client->getLanguages()->getByName('en')
+		);
+	}
+
+	public function testGetLocationByName(): void
+	{
+		$this->assertEquals(
+			['id' => 2750405, 'name' => 'Netherlands', 'parent_id' => 0],
+			$this->_client->getLocations()->getByName('Netherlands')
+		);
+	}
+
+	public function testGetTopicsByName(): void
+	{
+		$this->assertEquals(
+			['id' => 6, 'name' => 'Home/Health ', 'parent_id' => 1],
+			$this->_client->getTopics()->getByName('Home/Health')
+		);
+	}
+
+	public function testGetBrowsersByName(): void
+	{
+		$this->assertEquals(
+			['id' => 1, 'name' => 'Desktop', 'parent_id' => 0],
+			$this->_client->getBrowsers()->getByName('Desktop')
+		);
+	}
+
 	public function testGetLocations(): void
 	{
 		$locations = $this->_client->getLocations();

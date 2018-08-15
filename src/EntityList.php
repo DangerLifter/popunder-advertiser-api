@@ -12,7 +12,7 @@ class EntityList extends \ArrayIterator
 	public function getByName(string $name): ?array
 	{
 		foreach ($this as $value) {
-			if (0 === \strcasecmp($value['name'], $name)) {
+			if (0 === \strcasecmp(trim($value['name']), $name)) {
 				return $value;
 			}
 		}
