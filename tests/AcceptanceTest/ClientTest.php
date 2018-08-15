@@ -30,6 +30,12 @@ class ClientTest extends TestCase
 		$this->assertInternalType('array', $this->_client->getCampaignList());
 	}
 
+	public function testGetLanguageByName_WrongName_Exception(): void
+	{
+		$this->expectException(Exception::class);
+		$this->_client->getLanguages()->getByName('nl');
+	}
+
 	public function testGetLanguageByName(): void
 	{
 		$this->assertEquals(
