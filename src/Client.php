@@ -95,6 +95,18 @@ class Client
 		return $response['ids'];
 	}
 
+	public function getTotalCampaignStatistic(
+		\DateTimeInterface $from, \DateTimeInterface $to, int $campaignId = null
+	): array
+	{
+		$request = [
+			'date1' => $from->format('Y-m-d'),
+			'date2' => $to->format('Y-m-d')
+		];
+		if ($campaignId) $request['campaign_id'] = $campaignId;
+		return $this->request('stat/default', $request, true);
+	}
+
 	public function getTotalCampaignInfo(int $campaignId): array
 	{
 		$response = $this->request(

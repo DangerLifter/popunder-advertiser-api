@@ -12,6 +12,8 @@ require_once __DIR__.'/../config.php';
 
 class ClientTest extends TestCase
 {
+	private $_campaignIds = [];
+
 	/** @var Client */
 	private $_client;
 
@@ -23,6 +25,13 @@ class ClientTest extends TestCase
 			POPUNDER_TEST_ACCOUNT_USER_ID,
 			POPUNDER_TEST_ACCOUNT_KEY
 		);
+	}
+
+	protected function tearDown()
+	{
+		while ($campaignId = array_pop($this->_campaignIds)) {
+			$this->_client->removeCampaign($campaignId);
+		}
 	}
 
 	public function testGetCampaignList(): void
@@ -103,6 +112,7 @@ class ClientTest extends TestCase
 
 		$request = $this->createCampaignData();
 		$campaignId = $this->_client->addCampaign($request);
+		$this->prepareForClean($campaignId);
 		$this->assertGreaterThan(0, $campaignId);
 
 		$expected = clone $request;
@@ -127,11 +137,52 @@ class ClientTest extends TestCase
 	{
 		$request = $this->createCampaignData();
 		$campaignId = $this->_client->addCampaign($request);
-
 		$this->_client->removeCampaign($campaignId);
 
 		$info = $this->_client->getTotalCampaignInfo($campaignId);
 		$this->assertEquals(1, $info['deleted']);
+	}
+
+	public function testGetTotalCampaignStatistic_AllCampaigns_Success(): void
+	{
+		$request = $this->createCampaignData();
+		$campaignId1 = $this->_client->addCampaign($request);
+		$this->prepareForClean($campaignId1);
+
+		$request = $this->createCampaignData();
+		$campaignId2 = $this->_client->addCampaign($request);
+		$this->prepareForClean($campaignId2);
+
+		$stat = $this->_client->getTotalCampaignStatistic(
+			new \DateTimeImmutable('-1 day'),
+			new \DateTimeImmutable('+1 day')
+		);
+
+		$this->assertArrayHasKey('balance', $stat);
+		$this->assertArrayHasKey('date', $stat);
+		$this->assertArrayHasKey('clicks', $stat);
+		$this->assertArrayHasKey('money', $stat);
+		$this->assertArrayHasKey('campaigns', $stat);
+		$this->assertInternalType('array', $stat['campaigns']);
+		// Can't validate each exact campaign id, new campaigns are not returned
+		// Not consistent APi behavior.
+	}
+
+	public function testGetTotalCampaignStatistic_WrongId_Null(): void
+	{
+		$stat = $this->_client->getTotalCampaignStatistic(
+			new \DateTimeImmutable('-1 day'),
+			new \DateTimeImmutable('+1 day'),
+			111
+		);
+		$expected = [
+			'money' => null,
+			'clicks' => null,
+			'date' => null,
+			'balance' => 0,
+			'campaigns' => []
+		];
+		$this->assertEquals($expected, $stat);
 	}
 
 	private function assertCampaign(int $campaignId, CampaignData $expected)
@@ -188,5 +239,10 @@ class ClientTest extends TestCase
 				->addBrowser($browserId)
 				->adultNotAllowed()
 		;
+	}
+
+	private function prepareForClean(int $campaignId)
+	{
+		$this->_campaignIds[] = $campaignId;
 	}
 }
