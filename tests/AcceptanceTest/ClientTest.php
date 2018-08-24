@@ -164,7 +164,7 @@ class ClientTest extends TestCase
 		$this->assertArrayHasKey('money', $stat);
 		$this->assertArrayHasKey('campaigns', $stat);
 		$this->assertInternalType('array', $stat['campaigns']);
-		// Can't validate each exact campaign id, new campaigns are not returned
+		// Can't validate each exact campaign id, empty campaigns are not returned
 		// Not consistent APi behavior.
 	}
 
