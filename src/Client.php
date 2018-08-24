@@ -96,13 +96,17 @@ class Client
 	}
 
 	public function getTotalCampaignStatistic(
-		\DateTimeInterface $from, \DateTimeInterface $to, int $campaignId = null
+		\DateTimeInterface $from = null,
+		\DateTimeInterface $to = null,
+		int $campaignId = null
 	): array
 	{
+		if (!$to) $to = new \DateTimeImmutable();
 		$request = [
-			'date1' => $from->format('Y-m-d'),
 			'date2' => $to->format('Y-m-d')
 		];
+		if ($from) $request['date1'] = $from->format('Y-m-d');
+
 		if ($campaignId) $request['campaign_id'] = $campaignId;
 		return $this->request('stat/default', $request, true);
 	}

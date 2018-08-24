@@ -168,6 +168,28 @@ class ClientTest extends TestCase
 		// Not consistent APi behavior.
 	}
 
+	public function testGetTotalCampaignStatistic_NullDates_Success(): void
+	{
+		$request = $this->createCampaignData();
+		$campaignId1 = $this->_client->addCampaign($request);
+		$this->prepareForClean($campaignId1);
+
+		$request = $this->createCampaignData();
+		$campaignId2 = $this->_client->addCampaign($request);
+		$this->prepareForClean($campaignId2);
+
+		$stat = $this->_client->getTotalCampaignStatistic(null, null, $campaignId1);
+
+		$this->assertArrayHasKey('balance', $stat);
+		$this->assertArrayHasKey('date', $stat);
+		$this->assertArrayHasKey('clicks', $stat);
+		$this->assertArrayHasKey('money', $stat);
+		$this->assertArrayHasKey('campaigns', $stat);
+		$this->assertInternalType('array', $stat['campaigns']);
+		// Can't validate each exact campaign id, empty campaigns are not returned
+		// Not consistent APi behavior.
+	}
+
 	public function testGetTotalCampaignStatistic_WrongId_Null(): void
 	{
 		$stat = $this->_client->getTotalCampaignStatistic(
