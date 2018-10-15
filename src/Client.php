@@ -101,11 +101,12 @@ class Client
 		int $campaignId = null
 	): array
 	{
+		if (!$from) $from = new \DateTimeImmutable();
 		if (!$to) $to = new \DateTimeImmutable();
 		$request = [
+			'date1' => $from->format('Y-m-d'),
 			'date2' => $to->format('Y-m-d')
 		];
-		if ($from) $request['date1'] = $from->format('Y-m-d');
 
 		if ($campaignId) $request['campaign_id'] = $campaignId;
 		return $this->request('stat/default', $request, true);
