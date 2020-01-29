@@ -21,7 +21,7 @@ class Client
 	private $_key;
 	private $_httpClient;
 
-	private $_baseUrl = 'http://api.popunder.net/account';
+	private $_baseUrl = 'http://new.popunder.net/back/api/account';
 
 	public function __construct(
 		string $userId, string $key, \GuzzleHttp\Client $httpClient = null
@@ -162,9 +162,7 @@ class Client
 		return $this->editCampaign($campaignId, CampaignData::create()->setActive(false));
 	}
 
-	private function parseResponse(
-		ResponseInterface $response, bool $ignoreErrorCheck = false
-	): array
+	private function parseResponse(ResponseInterface $response, bool $ignoreErrorCheck = false): array
 	{
 		$result = \json_decode((string) $response->getBody(), true);
 		if (!\is_array($result)) throw new Exception('Invalid response');
@@ -190,9 +188,7 @@ class Client
 		return $result;
 	}
 
-	private function request(
-		string $endPoint, array $data = [], bool $ignoreErrorCheck = false
-	): array
+	private function request(string $endPoint, array $data = [], bool $ignoreErrorCheck = false): array
 	{
 		$url = $this->_baseUrl.'/'.$endPoint.'/';
 		$data['user_id'] = $this->_userId;
